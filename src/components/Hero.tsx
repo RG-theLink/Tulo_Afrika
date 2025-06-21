@@ -66,12 +66,6 @@ const Hero = () => {
               </Link>
               <span className="text-sm text-slate-500 font-medium">It's Free</span>
             </div>
-            <Link 
-              to="/signup/school"
-              className="border-2 border-teal-400 text-teal-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-400 hover:text-white transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm"
-            >
-              🏫 Empower Your School
-            </Link>
           </div>
 
           {/* Learning Stats - Updated to match your requirements */}
