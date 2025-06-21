@@ -76,38 +76,6 @@ const Header = ({ onLoginClick }: HeaderProps) => {
             >
               Our Platform
             </button>
-            <Link 
-              to="/resources"
-              className={`transition-colors duration-200 hover:text-teal-500 ${
-                isScrolled ? 'text-slate-600' : 'text-slate-700'
-              }`}
-            >
-              Resources
-            </Link>
-            <Link 
-              to="/pricing"
-              className={`transition-colors duration-200 hover:text-teal-500 ${
-                isScrolled ? 'text-slate-600' : 'text-slate-700'
-              }`}
-            >
-              Pricing
-            </Link>
-            <button 
-              onClick={() => scrollToSection('schools')}
-              className={`transition-colors duration-200 hover:text-teal-500 ${
-                isScrolled ? 'text-slate-600' : 'text-slate-700'
-              }`}
-            >
-              Partner Schools
-            </button>
-            <button 
-              onClick={() => scrollToSection('educators')}
-              className={`transition-colors duration-200 hover:text-teal-500 ${
-                isScrolled ? 'text-slate-600' : 'text-slate-700'
-              }`}
-            >
-              For Schools
-            </button>
             <button 
               onClick={() => scrollToSection('footer')}
               className={`transition-colors duration-200 hover:text-teal-500 ${
@@ -178,31 +146,12 @@ const Header = ({ onLoginClick }: HeaderProps) => {
                 Our Platform
               </button>
               <Link 
-                to="/resources"
+                to="/"
                 className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Resources
+                Home
               </Link>
-              <Link 
-                to="/pricing"
-                className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <button 
-                onClick={() => scrollToSection('schools')}
-                className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
-              >
-                Partner Schools
-              </button>
-              <button 
-                onClick={() => scrollToSection('educators')}
-                className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
-              >
-                For Schools
-              </button>
               <button 
                 onClick={() => scrollToSection('footer')}
                 className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
