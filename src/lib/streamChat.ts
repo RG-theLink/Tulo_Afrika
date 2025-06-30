@@ -6,38 +6,30 @@ const API_KEY = 'x9fc6pcfffpe';
 // Initialize client-side Stream Chat instance (without secret)
 export const clientChat = StreamChat.getInstance(API_KEY);
 
-// Connect user to Stream Chat with token from backend
+// Generate development token (ONLY for development - not for production)
+const generateDevToken = (userId: string): string => {
+  // This is a development-only approach
+  // In production, tokens should be generated server-side with the API secret
+  return clientChat.devToken(userId);
+};
+
+// Connect user to Stream Chat with token
 export const connectUser = async (userId: string, username: string, userType: string) => {
   try {
-    // In a real application, you would fetch the token from your backend
-    // For now, we'll create a mock token endpoint or handle this differently
-    // const response = await fetch('/api/stream-chat-token', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ userId })
-    // });
-    // const { token } = await response.json();
+    // Generate development token (replace with backend call in production)
+    const token = generateDevToken(userId);
     
-    // Temporary: For development, you'll need to implement a backend endpoint
-    // that generates the token securely using the API_SECRET
-    console.warn('Token generation needs to be implemented on the backend');
+    await clientChat.connectUser(
+      {
+        id: userId,
+        name: username,
+        role: userType,
+        image: `https://getstream.io/random_svg/?id=${userId}&name=${username}`,
+      },
+      token
+    );
     
-    // For now, we'll skip the actual connection to prevent the error
-    // This should be replaced with proper backend token generation
-    return { success: false, error: 'Token generation not implemented' };
-    
-    // Once you have a backend endpoint, uncomment this:
-    // await clientChat.connectUser(
-    //   {
-    //     id: userId,
-    //     name: username,
-    //     role: userType,
-    //     image: `https://getstream.io/random_svg/?id=${userId}&name=${username}`,
-    //   },
-    //   token
-    // );
-    // 
-    // return { success: true, token };
+    return { success: true, token };
   } catch (error) {
     console.error('Error connecting user to Stream Chat:', error);
     return { success: false, error };
