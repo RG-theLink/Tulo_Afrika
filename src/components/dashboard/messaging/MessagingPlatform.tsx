@@ -1,96 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Hash, Users, Settings, Plus, Search, Send, Smile, Paperclip, Phone, Video, MoreVertical, UserPlus, Volume2, VolumeX, Pin, Star, Reply, Edit3, Trash2, Download, Image, File, Mic, MicOff, PiIcon as EmojiIcon, AtSign, Bold, Italic, Code, Link as LinkIcon } from 'lucide-react';
-import StreamChatMessaging from './StreamChatMessaging';
+
+interface Message {
+  id: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  content: string;
+  timestamp: Date;
+  type: 'text' | 'image' | 'file' | 'voice';
+  attachments?: Array<{
+    id: string;
+    name: string;
+    url: string;
+    type: string;
+    size: number;
+  }>;
+  reactions?: Array<{
+    emoji: string;
+    users: string[];
+  }>;
+  isEdited?: boolean;
+  replyTo?: string;
+}
+
+interface Channel {
+  id: string;
+  name: string;
+  type: 'text' | 'voice' | 'announcement';
+  description?: string;
+  memberCount: number;
+  isPrivate: boolean;
+  lastMessage?: Message;
+  unreadCount: number;
+}
+
+interface DirectMessage {
+  id: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  status: 'online' | 'away' | 'busy' | 'offline';
+  lastMessage?: Message;
+  unreadCount: number;
+}
 
 interface MessagingPlatformProps {
   userType: 'student' | 'educator' | 'admin';
 }
 
 const MessagingPlatform = ({ userType }: MessagingPlatformProps) => {
-  const [useStreamChat, setUseStreamChat] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-
-  // If using Stream Chat, render the Stream Chat component
-  if (useStreamChat) {
-    return (
-      <div className="flex h-full bg-slate-900">
-        {/* Sidebar */}
-        <div className="w-80 bg-slate-800 flex flex-col">
-          {/* Server Header */}
-          <div className="p-4 border-b border-slate-700 bg-slate-800">
-            <div className="flex items-center justify-between">
-              <h2 className="text-white font-semibold text-lg">
-                {userType === 'student' && '🎓 Student Hub'}
-                {userType === 'educator' && '👨‍🏫 Faculty Hub'}
-                {userType === 'admin' && '🏫 Admin Hub'}
-              </h2>
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => setUseStreamChat(false)}
-                  className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
-                  title="Switch to legacy chat"
-                >
-                  <Settings className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* User Status */}
-          <div className="p-4 border-t border-slate-700 bg-slate-800 mt-auto">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-sm">
-                    {userType === 'student' && '🎓'}
-                    {userType === 'educator' && '👨‍🏫'}
-                    {userType === 'admin' && '🏫'}
-                  </span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-800"></div>
-              </div>
-              <div className="flex-1">
-                <div className="text-white text-sm font-medium">
-                  {userType === 'student' && 'Alex Johnson'}
-                  {userType === 'educator' && 'Dr. Sarah Wilson'}
-                  {userType === 'admin' && 'Michael Chen'}
-                </div>
-                <div className="text-slate-400 text-xs">Online</div>
-              </div>
-              <div className="flex space-x-1">
-                <button 
-                  onClick={() => setIsMuted(!isMuted)}
-                  className={`p-2 rounded-lg transition-colors ${
-                    isMuted ? 'text-red-400 bg-red-900/20' : 'text-slate-400 hover:text-white hover:bg-slate-700'
-                  }`}
-                >
-                  {isMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col bg-white">
-          <StreamChatMessaging userType={userType} />
-        </div>
-      </div>
-    );
-  }
-
-  // Original messaging implementation (legacy)
   const [activeChannel, setActiveChannel] = useState<string>('general');
   const [activeTab, setActiveTab] = useState<'channels' | 'dms'>('channels');
   const [messageInput, setMessageInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showMemberList, setShowMemberList] = useState(true);
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [emojiCategory, setEmojiCategory] = useState<string>('smileys');
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Comprehensive emoji collection organized by categories
   const emojiCategories = {
@@ -205,50 +176,6 @@ const MessagingPlatform = ({ userType }: MessagingPlatformProps) => {
       ]
     }
   };
-
-  interface Message {
-    id: string;
-    userId: string;
-    username: string;
-    avatar: string;
-    content: string;
-    timestamp: Date;
-    type: 'text' | 'image' | 'file' | 'voice';
-    attachments?: Array<{
-      id: string;
-      name: string;
-      url: string;
-      type: string;
-      size: number;
-    }>;
-    reactions?: Array<{
-      emoji: string;
-      users: string[];
-    }>;
-    isEdited?: boolean;
-    replyTo?: string;
-  }
-
-  interface Channel {
-    id: string;
-    name: string;
-    type: 'text' | 'voice' | 'announcement';
-    description?: string;
-    memberCount: number;
-    isPrivate: boolean;
-    lastMessage?: Message;
-    unreadCount: number;
-  }
-
-  interface DirectMessage {
-    id: string;
-    userId: string;
-    username: string;
-    avatar: string;
-    status: 'online' | 'away' | 'busy' | 'offline';
-    lastMessage?: Message;
-    unreadCount: number;
-  }
 
   // Mock data based on user type
   const getChannels = (): Channel[] => {
@@ -607,7 +534,7 @@ const MessagingPlatform = ({ userType }: MessagingPlatformProps) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
@@ -625,15 +552,12 @@ const MessagingPlatform = ({ userType }: MessagingPlatformProps) => {
               {userType === 'educator' && '👨‍🏫 Faculty Hub'}
               {userType === 'admin' && '🏫 Admin Hub'}
             </h2>
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => setUseStreamChat(true)}
-                className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
-                title="Switch to Stream Chat"
-              >
-                <Settings className="h-5 w-5" />
-              </button>
-            </div>
+            <button 
+              onClick={() => console.log('Settings clicked')}
+              className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
+            >
+              <Settings className="h-5 w-5" />
+            </button>
           </div>
         </div>
 
