@@ -32,7 +32,7 @@ const DashboardHeader = ({ userType, onLogout }: DashboardHeaderProps) => {
           <div className="bg-gradient-to-r from-teal-400 to-blue-500 p-2 rounded-lg">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <span className="font-bold text-lg text-slate-800">Tuto ki Tulo</span>
+          <span className="font-bold text-lg text-slate-800">Swakopmund Christian Academy</span>
         </div>
 
         {/* Search Bar */}
