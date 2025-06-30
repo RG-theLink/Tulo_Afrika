@@ -35,6 +35,21 @@ const LandingPage = () => {
     }
   }, [location.state, isAuthenticated, user]);
 
+  // Load ElevenLabs Convai widget script
+  useEffect(() => {
+    if (currentView === 'landing') {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+      script.async = true;
+      script.type = 'text/javascript';
+      document.body.appendChild(script);
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [currentView]);
+
   const handleLoginClick = () => {
     setCurrentView('login');
   };
@@ -94,6 +109,9 @@ const LandingPage = () => {
       >
         🛡️
       </button>
+
+      {/* ElevenLabs Convai Widget */}
+      <elevenlabs-convai agent-id="agent_01jz167zg7fng8q2cwqrh8hkpg"></elevenlabs-convai>
     </div>
   );
 };
