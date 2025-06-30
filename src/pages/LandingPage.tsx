@@ -11,6 +11,7 @@ import DashboardLayout from '../components/dashboard/DashboardLayout';
 import AdminLogin from '../components/admin/AdminLogin';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import { useAuth } from '../components/auth/AuthContext';
+import StudentProjects from '../components/StudentProjects';
 
 const LandingPage = () => {
   const location = useLocation();
@@ -99,6 +100,7 @@ const LandingPage = () => {
       <Features />
       <RegisteredSchools />
       <Educators />
+      <StudentProjects />
       <Footer />
       
       {/* Admin Access Button - Hidden but accessible */}
