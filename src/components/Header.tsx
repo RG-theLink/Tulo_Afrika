@@ -62,7 +62,7 @@ const Header = ({ onLoginClick }: HeaderProps) => {
             <span className={`font-bold text-lg transition-colors duration-300 ${
               isScrolled ? 'text-slate-800' : 'text-slate-800'
             }`}>
-              Tuto ki Tulo mwa Afrika
+              Swakopmund Christian Academy
             </span>
           </div>
 

@@ -25,7 +25,7 @@ const MessagingPage = () => {
               <div className="bg-gradient-to-r from-teal-400 to-blue-500 p-2 rounded-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <span className="font-bold text-lg text-white">Tuto ki Tulo - Messaging</span>
+              <span className="font-bold text-lg text-white">Swakopmund Christian Academy - Messaging</span>
             </div>
 
             {/* Back to Dashboard */}
