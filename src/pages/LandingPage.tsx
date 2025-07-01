@@ -37,9 +37,13 @@ const LandingPage = () => {
     }
   }, [location.state, isAuthenticated, user]);
 
-  // Load ElevenLabs Convai widget script with error handling
+  // Temporarily disable ElevenLabs Convai widget to prevent fetch errors
+  // The widget can be re-enabled once a valid agent ID is configured
   useEffect(() => {
     if (currentView === 'landing') {
+      // Commenting out the widget loading to prevent console errors
+      // Uncomment and update agent ID when ready to use
+      /*
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
       script.async = true;
@@ -63,6 +67,7 @@ const LandingPage = () => {
           // Script might have already been removed
         }
       };
+      */
     }
   }, [currentView]);
 
@@ -127,10 +132,13 @@ const LandingPage = () => {
         🛡️
       </button>
 
-      {/* ElevenLabs Convai Widget - Only render if script loaded successfully */}
+      {/* ElevenLabs Convai Widget - Temporarily disabled to prevent fetch errors */}
+      {/* Uncomment when a valid agent ID is available */}
+      {/*
       {widgetLoaded && (
         <elevenlabs-convai agent-id="agent_01jz167zg7fng8q2cwqrh8hkpg"></elevenlabs-convai>
       )}
+      */}
     </div>
   );
 };
