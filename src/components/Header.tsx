@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, Menu, X, LogOut, User } from 'lucide-react';
-import { useAuth } from '../components/auth/AuthContext';
+import { useAuth } from './auth/AuthContext';
 
 interface HeaderProps {
   onLoginClick?: () => void;

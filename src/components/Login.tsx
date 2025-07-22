@@ -9,7 +9,7 @@ interface LoginProps {
 
 const Login = ({ onLogin }: LoginProps) => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -63,20 +63,20 @@ const Login = ({ onLogin }: LoginProps) => {
     setPassword(demoPassword);
     
     try {
-      const user = await login(demoEmail, demoPassword);
-      if (user) {
+      const { error, userType: returnedUserType } = await signIn(demoEmail, demoPassword);
+      if (!error && returnedUserType) {
         if (onLogin) {
-          onLogin(userType);
+          onLogin(returnedUserType);
         } else {
           // Navigate based on user type
-          if (userType === 'admin') {
+          if (returnedUserType === 'admin') {
             navigate('/admin');
           } else {
             navigate('/dashboard');
           }
         }
       } else {
-        setError('Invalid credentials. Please try again.');
+        setError(error?.message || 'Invalid credentials. Please try again.');
       }
     } catch (err) {
       setError('An error occurred during login. Please try again.');
@@ -91,20 +91,20 @@ const Login = ({ onLogin }: LoginProps) => {
     setError('');
 
     try {
-      const user = await login(email, password);
-      if (user) {
+      const { error, userType: returnedUserType } = await signIn(email, password);
+      if (!error && returnedUserType) {
         if (onLogin) {
-          onLogin(user.userType);
+          onLogin(returnedUserType);
         } else {
           // Navigate based on user type
-          if (user.userType === 'admin') {
+          if (returnedUserType === 'admin') {
             navigate('/admin');
           } else {
             navigate('/dashboard');
           }
         }
       } else {
-        setError('Invalid credentials. Please try again.');
+        setError(error?.message || 'Invalid credentials. Please try again.');
       }
     } catch (err) {
       setError('An error occurred during login. Please try again.');

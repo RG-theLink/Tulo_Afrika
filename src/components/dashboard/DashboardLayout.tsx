@@ -46,7 +46,7 @@ const DashboardLayout = ({ onLogout }: DashboardLayoutProps) => {
           <div className="flex-1 flex">
             <MainContent userType={currentUserType} activeView={activeView} />
             {activeView === 'dashboard' && <RightSidebar userType={currentUserType} />}
-          </div>
+    signOut();
         );
     }
   };
