@@ -60,7 +60,6 @@ const DashboardLayout = ({ onLogout }: DashboardLayoutProps) => {
           userType={currentUserType} 
           activeView={activeView}
           onViewChange={setActiveView}
-        )
         />
         
         <div className="flex-1 flex">
