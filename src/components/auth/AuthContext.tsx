@@ -1,118 +1,144 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '../../lib/supabase';
 
-// Define user types
-export type UserType = 'student' | 'educator' | 'admin';
+type UserType = 'student' | 'educator' | 'admin';
 
-// Define user interface
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  userType: UserType;
-}
-
-// Define context interface
 interface AuthContextType {
+  session: Session | null;
   user: User | null;
   userType: UserType | null;
-  login: (email: string, password: string) => Promise<User | null>;
-  logout: () => void;
-  isAuthenticated: boolean;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{
+    error: Error | null;
+    userType?: UserType;
+  }>;
+  signUp: (email: string, password: string, userType: UserType, metadata?: any) => Promise<{
+    error: Error | null;
+  }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{
+    error: Error | null;
+  }>;
 }
 
-// Create context with default values
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  userType: null,
-  login: async () => null,
-  logout: () => {},
-  isAuthenticated: false
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Demo users for authentication
-const demoUsers = [
-  {
-    id: '1',
-    email: 'demo.student@tutokitulo.africa',
-    password: 'student123',
-    name: 'Alex Johnson',
-    userType: 'student' as UserType
-  },
-  {
-    id: '2',
-    email: 'demo.educator@tutokitulo.africa',
-    password: 'educator123',
-    name: 'Dr. Sarah Wilson',
-    userType: 'educator' as UserType
-  },
-  {
-    id: '3',
-    email: 'admin@tutokitulo.africa',
-    password: 'admin123',
-    name: 'Michael Chen',
-    userType: 'admin' as UserType
-  }
-];
-
-// Provider component
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userType, setUserType] = useState<UserType | null>(null);
-  
-  // Check for existing session on mount
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setUserType(parsedUser.userType);
-    }
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Get user type from metadata if available
+      if (session?.user?.user_metadata?.user_type) {
+        setUserType(session.user.user_metadata.user_type as UserType);
+      }
+      
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Get user type from metadata if available
+      if (session?.user?.user_metadata?.user_type) {
+        setUserType(session.user.user_metadata.user_type as UserType);
+      } else {
+        setUserType(null);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Login function
-  const login = async (email: string, password: string): Promise<User | null> => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const foundUser = demoUsers.find(
-          (u) => u.email === email && u.password === password
-        );
-        
-        if (foundUser) {
-          // Create user object without password
-          const { password, ...userWithoutPassword } = foundUser;
-          setUser(userWithoutPassword);
-          setUserType(userWithoutPassword.userType);
-          
-          // Store in localStorage for persistence
-          localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-          resolve(userWithoutPassword);
-        } else {
-          resolve(null);
-        }
-      }, 1000);
-    });
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        return { error };
+      }
+
+      // Get user type from metadata
+      const userType = data.user?.user_metadata?.user_type as UserType;
+      setUserType(userType);
+      
+      return { error: null, userType };
+    } catch (error) {
+      return { error: error as Error };
+    }
   };
 
-  // Logout function
-  const logout = () => {
-    setUser(null);
+  const signUp = async (email: string, password: string, userType: UserType, metadata = {}) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            user_type: userType,
+            ...metadata,
+          },
+        },
+      });
+
+      return { error };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUserType(null);
-    localStorage.removeItem('user');
   };
 
-  return (
-    <AuthContext.Provider value={{ 
-      user, 
-      userType,
-      login, 
-      logout, 
-      isAuthenticated: !!user 
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      return { error };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
+  const value = {
+    session,
+    user,
+    userType,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook for using auth context
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

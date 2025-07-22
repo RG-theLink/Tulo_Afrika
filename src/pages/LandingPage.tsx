@@ -92,7 +92,7 @@ const LandingPage = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    signOut();
     setCurrentView('landing');
     navigate('/');
   };
