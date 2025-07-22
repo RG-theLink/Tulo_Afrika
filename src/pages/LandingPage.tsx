@@ -11,14 +11,12 @@ import DashboardLayout from '../components/dashboard/DashboardLayout';
 import AdminLogin from '../components/admin/AdminLogin';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import { useAuth } from '../components/auth/AuthContext';
-import StudentProjects from '../components/StudentProjects';
 
 const LandingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, userType, isAuthenticated, logout } = useAuth();
   const [currentView, setCurrentView] = useState<'landing' | 'login' | 'dashboard' | 'admin-login' | 'admin-dashboard'>('landing');
-  const [widgetLoaded, setWidgetLoaded] = useState(false);
 
   // Check if we should show dashboard based on navigation state or authentication
   useEffect(() => {
@@ -36,40 +34,6 @@ const LandingPage = () => {
       }
     }
   }, [location.state, isAuthenticated, user]);
-
-  // Temporarily disable ElevenLabs Convai widget to prevent fetch errors
-  // The widget can be re-enabled once a valid agent ID is configured
-  useEffect(() => {
-    if (currentView === 'landing') {
-      // Commenting out the widget loading to prevent console errors
-      // Uncomment and update agent ID when ready to use
-      /*
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-      script.async = true;
-      script.type = 'text/javascript';
-      
-      script.onload = () => {
-        setWidgetLoaded(true);
-      };
-      
-      script.onerror = () => {
-        console.warn('ElevenLabs Convai widget failed to load. This is optional and does not affect core functionality.');
-        setWidgetLoaded(false);
-      };
-      
-      document.body.appendChild(script);
-
-      return () => {
-        try {
-          document.body.removeChild(script);
-        } catch (error) {
-          // Script might have already been removed
-        }
-      };
-      */
-    }
-  }, [currentView]);
 
   const handleLoginClick = () => {
     setCurrentView('login');
@@ -92,7 +56,7 @@ const LandingPage = () => {
   };
 
   const handleLogout = () => {
-    signOut();
+    logout();
     setCurrentView('landing');
     navigate('/');
   };
@@ -120,7 +84,6 @@ const LandingPage = () => {
       <Features />
       <RegisteredSchools />
       <Educators />
-      <StudentProjects />
       <Footer />
       
       {/* Admin Access Button - Hidden but accessible */}
@@ -131,14 +94,6 @@ const LandingPage = () => {
       >
         🛡️
       </button>
-
-      {/* ElevenLabs Convai Widget - Temporarily disabled to prevent fetch errors */}
-      {/* Uncomment when a valid agent ID is available */}
-      {/*
-      {widgetLoaded && (
-        <elevenlabs-convai agent-id="agent_01jz167zg7fng8q2cwqrh8hkpg"></elevenlabs-convai>
-      )}
-      */}
     </div>
   );
 };
