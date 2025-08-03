@@ -49,13 +49,13 @@ const Login = ({ onLogin }: LoginProps) => {
     let demoPassword = '';
     
     if (userType === 'student') {
-      demoEmail = 'demo.student@swakopca.com';
+      demoEmail = 'demo.student@tutokitulo.africa';
       demoPassword = 'student123';
     } else if (userType === 'educator') {
-      demoEmail = 'demo.educator@swakopca.com';
+      demoEmail = 'demo.educator@tutokitulo.africa';
       demoPassword = 'educator123';
     } else {
-      demoEmail = 'admin@swakopca.com';
+      demoEmail = 'admin@tutokitulo.africa';
       demoPassword = 'admin123';
     }
     
@@ -124,7 +124,7 @@ const Login = ({ onLogin }: LoginProps) => {
             <div className="bg-gradient-to-r from-teal-400 to-blue-500 p-3 rounded-xl">
               <GraduationCap className="h-8 w-8 text-white" />
             </div>
-            <span className="text-2xl font-bold text-slate-800">Swakopmund Christian Academy</span>
+            <span className="text-2xl font-bold text-slate-800">Tuto ki Tulo</span>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-teal-600 bg-clip-text text-transparent mb-2">
             Welcome Back
@@ -263,7 +263,7 @@ const Login = ({ onLogin }: LoginProps) => {
                   <span>Student Demo</span>
                 </div>
                 <div className="text-xs text-purple-600 mt-1">
-                  demo.student@swakopca.com / student123
+                  demo.student@tutokitulo.africa / student123
                 </div>
               </button>
               
@@ -276,7 +276,7 @@ const Login = ({ onLogin }: LoginProps) => {
                   <span>Educator Demo</span>
                 </div>
                 <div className="text-xs text-blue-600 mt-1">
-                  demo.educator@swakopca.com / educator123
+                  demo.educator@tutokitulo.africa / educator123
                 </div>
               </button>
 
@@ -289,7 +289,7 @@ const Login = ({ onLogin }: LoginProps) => {
                   <span>Admin Demo</span>
                 </div>
                 <div className="text-xs text-orange-600 mt-1">
-                  admin@swakopca.com / admin123
+                  admin@tutokitulo.africa / admin123
                 </div>
               </button>
             </div>

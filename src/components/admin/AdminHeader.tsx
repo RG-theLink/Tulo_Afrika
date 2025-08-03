@@ -18,7 +18,7 @@ const AdminHeader = ({ onLogout }: AdminHeaderProps) => {
           </div>
           <div>
             <span className="font-bold text-lg text-slate-800">Admin Portal</span>
-            <div className="text-xs text-slate-500">Swakopmund Christian Academy</div>
+            <div className="text-xs text-slate-500">Tuto ki Tulo mwa Afrika</div>
           </div>
         </div>
 

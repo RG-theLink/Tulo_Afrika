@@ -12,7 +12,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDemoLogin = () => {
-    setEmail('admin@swakopca.com');
+    setEmail('admin@tutokitulo.africa');
     setPassword('admin123');
     setTimeout(() => onLogin(), 500);
   };
@@ -23,7 +23,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
 
     // Simulate authentication delay
     setTimeout(() => {
-      if ((email === 'admin@swakopca.com' && password === 'admin123') || (email && password)) {
+      if ((email === 'admin@tutokitulo.africa' && password === 'admin123') || (email && password)) {
         onLogin();
       }
       setIsLoading(false);
@@ -124,7 +124,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
                 <span>Admin Demo Access</span>
               </div>
               <div className="text-xs text-slate-400 mt-1">
-                admin@swakopca.com / admin123
+                admin@tutokitulo.africa / admin123
               </div>
             </button>
           </div>
