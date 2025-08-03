@@ -38,7 +38,7 @@ const Footer = () => {
                 <div className="bg-gradient-to-r from-teal-400 to-blue-500 p-2 rounded-lg">
                   <GraduationCap className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-slate-200 font-bold text-lg">Swakopmund Christian Academy</span>
+                <span className="text-slate-200 font-bold text-lg">Tuto ki Tulo mwa Afrika</span>
               </div>
               <p className="text-slate-400 leading-relaxed">
                 Education is victory for Africa. Empowering students across the continent 
@@ -170,7 +170,7 @@ const Footer = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 bg-slate-700/30 p-3 rounded-lg">
                   <Mail className="h-5 w-5 text-teal-400" />
-                  <span className="text-slate-300">info@swakopca.com</span>
+                  <span className="text-slate-300">info@tuloafrika.tech</span>
                 </div>
                 <div className="flex items-center space-x-3 bg-slate-700/30 p-3 rounded-lg">
                   <Phone className="h-5 w-5 text-teal-400" />
@@ -202,7 +202,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm flex items-center">
               <span className="mr-2">©</span>
-              2024 Swakopmund Christian Academy. All rights reserved.
+              2024 Tuto ki Tulo mwa Afrika. All rights reserved.
             </p>
             <p className="text-slate-500 text-sm mt-2 md:mt-0 flex items-center">
               <span className="mr-2">❤️</span>
