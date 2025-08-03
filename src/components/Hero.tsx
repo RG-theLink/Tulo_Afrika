@@ -56,6 +56,18 @@ const Hero = () => {
             guidance into a single, personalized platform for every student's journey.
           </p>
           
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/signup/student"
+                className="bg-gradient-to-r from-teal-400 to-blue-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-teal-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl animate-pulse-glow"
+              >
+                🎓 Start Your Journey
+              </Link>
+              <span className="text-sm text-slate-500 font-medium">It's Free</span>
+            </div>
+          </div>
+
           {/* Learning Stats - Updated to match your requirements */}
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-white/50 shadow-lg">
