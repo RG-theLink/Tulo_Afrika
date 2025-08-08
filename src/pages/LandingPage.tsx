@@ -62,8 +62,12 @@ const LandingPage = () => {
     navigate('/');
   };
 
+  const handleBackToHome = () => {
+    setCurrentView('landing');
+  };
+
   if (currentView === 'login') {
-    return <Login onLogin={handleLogin} />;
+    return <Login onLogin={handleLogin} onBackToHome={handleBackToHome} />;
   }
 
   if (currentView === 'admin-login') {
