@@ -11,11 +11,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDemoLogin = () => {
-    setEmail('admin@tutokitulo.africa');
-    setPassword('admin123');
-    setTimeout(() => onLogin(), 500);
-  };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,24 +106,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 pt-6 border-t border-white/20">
-            <h3 className="text-sm font-medium text-slate-200 mb-4 text-center">
-              🔐 Demo Access
-            </h3>
-            <button
-              onClick={handleDemoLogin}
-              className="w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500 text-slate-200 py-2 px-4 rounded-lg hover:from-slate-500 hover:to-slate-600 transition-all duration-200 text-sm"
-            >
-              <div className="flex items-center justify-center space-x-2">
-                <span>🛡️</span>
-                <span>Admin Demo Access</span>
-              </div>
-              <div className="text-xs text-slate-400 mt-1">
-                admin@tutokitulo.africa / admin123
-              </div>
-            </button>
-          </div>
+
 
           {/* Security Notice */}
           <div className="mt-6 text-center text-xs text-slate-400">
