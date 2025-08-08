@@ -425,17 +425,17 @@ const RegisteredSchools = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <button 
                 onClick={() => setShowPartnerForm(true)}
-                className="bg-gradient-to-r from-blue-400 to-purple-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center space-x-2"
+                className="bg-gradient-to-r from-teal-400 to-blue-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-teal-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center space-x-2"
               >
-                <Building className="h-6 w-6" />
-                <span>Partner With Us</span>
+                <span>📞</span>
+                <span>Book a Discovery Call</span>
               </button>
               <button 
                 onClick={() => setShowDemoForm(true)}
-                className="border-2 border-blue-400 text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-400 hover:text-white transition-all duration-300 transform hover:scale-105 bg-white/80 backdrop-blur-sm flex items-center justify-center space-x-2"
+                className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-purple-500 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center space-x-2"
               >
-                <Calendar className="h-6 w-6" />
-                <span>Schedule a Demo</span>
+                <span>🎯</span>
+                <span>Book a Live Demo</span>
               </button>
             </div>
 
@@ -474,8 +474,8 @@ const RegisteredSchools = () => {
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-slate-800 flex items-center space-x-2">
-                  <Building className="h-6 w-6 text-blue-600" />
-                  <span>Partner With Us</span>
+                  <span>📞</span>
+                  <span>Book a Discovery Call</span>
                 </h3>
                 <button 
                   onClick={() => setShowPartnerForm(false)}
@@ -603,8 +603,8 @@ const RegisteredSchools = () => {
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-slate-800 flex items-center space-x-2">
-                  <Calendar className="h-6 w-6 text-blue-600" />
-                  <span>Schedule a Demo</span>
+                  <span>🎯</span>
+                  <span>Book a Live Demo</span>
                 </h3>
                 <button 
                   onClick={() => setShowDemoForm(false)}
