@@ -11,7 +11,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-white to-teal-50 pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-white to-teal-50 pt-24">
       {/* Educational Tools Canvas Animation Background */}
       <CanvasAnimation />
       
@@ -56,16 +56,15 @@ const Hero = () => {
             guidance into a single, personalized platform for every student's journey.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/signup/student"
-                className="bg-gradient-to-r from-teal-400 to-blue-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-teal-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl animate-pulse-glow"
-              >
-                🎓 Start Your Journey
-              </Link>
-              <span className="text-sm text-slate-500 font-medium">It's Free</span>
+          {/* Coming Soon Banner */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-xl">
+              🚀 Coming Soon to the Public
             </div>
+            <p className="text-slate-600 text-sm max-w-md mx-auto">
+              We're currently in demo mode. The platform will be available to everyone soon! 
+              <span className="font-medium"> Use the login button above for demo access.</span>
+            </p>
           </div>
 
           {/* Learning Stats - Updated to match your requirements */}
