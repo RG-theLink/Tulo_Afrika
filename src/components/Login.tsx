@@ -6,9 +6,10 @@ import { useAuth } from './auth/AuthContext';
 interface LoginProps {
   onLogin?: (userType: 'student' | 'educator' | 'admin') => void;
   onBackToHome?: () => void;
+  onWaitlistClick?: () => void;
 }
 
-const Login = ({ onLogin, onBackToHome }: LoginProps) => {
+const Login = ({ onLogin, onBackToHome, onWaitlistClick }: LoginProps) => {
   const navigate = useNavigate();
   const { login } = useAuth();
   
@@ -224,7 +225,20 @@ const Login = ({ onLogin, onBackToHome }: LoginProps) => {
             </button>
           </form>
 
-
+          {/* Waitlist Section */}
+          <div className="mt-8 pt-6 border-t border-slate-200">
+            <div className="text-center">
+              <p className="text-slate-600 text-sm mb-4">
+                Don't have demo credentials yet?
+              </p>
+              <button
+                onClick={onWaitlistClick}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
+              >
+                📝 Join Waitlist for Demo Access
+              </button>
+            </div>
+          </div>
 
           {/* Footer Links */}
           <div className="mt-6 text-center text-sm text-slate-500">

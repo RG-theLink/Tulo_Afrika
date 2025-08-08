@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CanvasAnimation from './CanvasAnimation';
 
-const Hero = () => {
+interface HeroProps {
+  onWaitlistClick?: () => void;
+}
+
+const Hero = ({ onWaitlistClick }: HeroProps) => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -56,8 +60,8 @@ const Hero = () => {
             guidance into a single, personalized platform for every student's journey.
           </p>
           
-          {/* Coming Soon Banner */}
-          <div className="flex flex-col items-center gap-4">
+          {/* Coming Soon Banner with Waitlist */}
+          <div className="flex flex-col items-center gap-6">
             <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-xl">
               🚀 Coming Soon to the Public
             </div>
@@ -65,6 +69,14 @@ const Hero = () => {
               We're currently in demo mode. The platform will be available to everyone soon! 
               <span className="font-medium"> Use the login button above for demo access.</span>
             </p>
+            
+            {/* Waitlist Button */}
+            <button
+              onClick={onWaitlistClick}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              📝 Join Waitlist for Demo Access
+            </button>
           </div>
 
           {/* Learning Stats - Updated to match your requirements */}
