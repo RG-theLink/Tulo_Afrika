@@ -41,50 +41,7 @@ const Login = ({ onLogin, onBackToHome }: LoginProps) => {
     }
   ];
 
-  const handleDemoLogin = async (userType: 'student' | 'educator' | 'admin') => {
-    setSelectedUserType(userType);
-    setIsLoading(true);
-    setError('');
-    
-    let demoEmail = '';
-    let demoPassword = '';
-    
-    if (userType === 'student') {
-      demoEmail = 'demo.student@tutokitulo.africa';
-      demoPassword = 'student123';
-    } else if (userType === 'educator') {
-      demoEmail = 'demo.educator@tutokitulo.africa';
-      demoPassword = 'educator123';
-    } else {
-      demoEmail = 'admin@tutokitulo.africa';
-      demoPassword = 'admin123';
-    }
-    
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    
-    try {
-      const user = await login(demoEmail, demoPassword);
-      if (user) {
-        if (onLogin) {
-          onLogin(userType);
-        } else {
-          // Navigate based on user type
-          if (userType === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/dashboard');
-          }
-        }
-      } else {
-        setError('Invalid credentials. Please try again.');
-      }
-    } catch (err) {
-      setError('An error occurred during login. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -267,52 +224,7 @@ const Login = ({ onLogin, onBackToHome }: LoginProps) => {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 pt-6 border-t border-slate-200">
-            <h3 className="text-sm font-medium text-slate-700 mb-4 text-center">
-              🎯 Demo Credentials
-            </h3>
-            <div className="space-y-3">
-              <button
-                onClick={() => handleDemoLogin('student')}
-                className="w-full bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200 text-purple-700 py-2 px-4 rounded-lg hover:from-purple-200 hover:to-pink-200 transition-all duration-200 text-sm"
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <span>🎓</span>
-                  <span>Student Demo</span>
-                </div>
-                <div className="text-xs text-purple-600 mt-1">
-                  demo.student@tutokitulo.africa / student123
-                </div>
-              </button>
-              
-              <button
-                onClick={() => handleDemoLogin('educator')}
-                className="w-full bg-gradient-to-r from-blue-100 to-teal-100 border border-blue-200 text-blue-700 py-2 px-4 rounded-lg hover:from-blue-200 hover:to-teal-200 transition-all duration-200 text-sm"
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <span>👨‍🏫</span>
-                  <span>Educator Demo</span>
-                </div>
-                <div className="text-xs text-blue-600 mt-1">
-                  demo.educator@tutokitulo.africa / educator123
-                </div>
-              </button>
 
-              <button
-                onClick={() => handleDemoLogin('admin')}
-                className="w-full bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 text-orange-700 py-2 px-4 rounded-lg hover:from-orange-200 hover:to-red-200 transition-all duration-200 text-sm"
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <span>🛡️</span>
-                  <span>Admin Demo</span>
-                </div>
-                <div className="text-xs text-orange-600 mt-1">
-                  admin@tutokitulo.africa / admin123
-                </div>
-              </button>
-            </div>
-          </div>
 
           {/* Footer Links */}
           <div className="mt-6 text-center text-sm text-slate-500">
