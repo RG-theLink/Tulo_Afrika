@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import PricingPage from './pages/PricingPage';
 import ResourcesPage from './pages/ResourcesPage';
+import InternationalCurriculumsPage from './pages/InternationalCurriculumsPage';
 import SecurityDetailsPage from './pages/SecurityDetailsPage';
 import SchoolDetailsPage from './pages/SchoolDetailsPage';
 import PartnershipDetailsPage from './pages/PartnershipDetailsPage';
@@ -26,6 +27,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/international-curricula" element={<InternationalCurriculumsPage />} />
         <Route path="/security-details" element={<SecurityDetailsPage />} />
         <Route path="/school-details" element={<SchoolDetailsPage />} />
         <Route path="/partnership-details" element={<PartnershipDetailsPage />} />
