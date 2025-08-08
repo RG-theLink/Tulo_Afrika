@@ -10,6 +10,7 @@ import Login from '../components/Login';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import AdminLogin from '../components/admin/AdminLogin';
 import AdminDashboard from '../components/admin/AdminDashboard';
+import ElevenLabsWidget from '../components/ElevenLabsWidget';
 import { useAuth } from '../components/auth/AuthContext';
 
 const LandingPage = () => {
@@ -86,10 +87,13 @@ const LandingPage = () => {
       <Educators />
       <Footer />
       
+      {/* ElevenLabs Voice Assistant Widget */}
+      <ElevenLabsWidget />
+      
       {/* Admin Access Button - Hidden but accessible */}
       <button
         onClick={handleAdminLoginClick}
-        className="fixed bottom-4 right-4 bg-gradient-to-r from-orange-400 to-red-500 text-white p-3 rounded-full shadow-lg hover:from-orange-500 hover:to-red-600 transition-all duration-200 opacity-20 hover:opacity-100"
+        className="fixed bottom-4 right-20 bg-gradient-to-r from-orange-400 to-red-500 text-white p-3 rounded-full shadow-lg hover:from-orange-500 hover:to-red-600 transition-all duration-200 opacity-20 hover:opacity-100"
         title="Admin Access"
       >
         🛡️
