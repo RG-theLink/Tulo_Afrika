@@ -47,9 +47,13 @@ const Hero = ({ onWaitlistClick }: HeroProps) => {
       {/* Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-teal-600 bg-clip-text text-transparent mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-teal-600 bg-clip-text text-transparent mb-3 leading-tight">
             Tuto ki Tulo mwa Afrika
           </h1>
+          
+          <p className="text-lg sm:text-xl text-slate-500 mb-8 font-medium italic">
+            "Education is Victory for Africa"
+          </p>
           
           <p className="text-xl sm:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto font-medium">
             A unified learning portal to unlock potential.
