@@ -24,17 +24,19 @@ const InternationalCurriculumsPage = () => {
       curriculum: 'Common Core State Standards',
       keyStages: ['Elementary (K-5)', 'Middle School (6-8)', 'High School (9-12)'],
       subjects: ['Mathematics', 'English Language Arts', 'Science', 'Social Studies', 'Arts', 'Physical Education', 'Technology'],
-      description: 'Resources aligned with Common Core standards and state-specific educational requirements.',
-      color: 'from-red-400 to-blue-400'
+      description: 'Comprehensive resources aligned with Common Core standards and state-specific educational requirements.',
+      color: 'from-red-400 to-blue-400',
+      available: true
     },
     {
-      name: 'Australia',
-      flag: '🇦🇺',
-      curriculum: 'Australian Curriculum',
-      keyStages: ['Foundation (Prep)', 'Years 1-6', 'Years 7-10', 'Years 11-12'],
-      subjects: ['English', 'Mathematics', 'Science', 'Humanities', 'The Arts', 'Technologies', 'Health & PE', 'Languages'],
-      description: 'Curated content following the Australian Curriculum, Assessment and Reporting Authority guidelines.',
-      color: 'from-green-400 to-yellow-400'
+      name: 'Namibia',
+      flag: '🇳🇦',
+      curriculum: 'Namibian Cambridge Curriculum',
+      keyStages: ['Lower Primary (Grades 1-3)', 'Upper Primary (Grades 4-7)', 'Junior Secondary (Grades 8-10)', 'Senior Secondary (Grades 11-12)'],
+      subjects: ['English', 'Mathematics', 'Natural Science', 'Social Studies', 'Life Skills', 'Physical Education', 'Arts', 'Local Languages'],
+      description: 'Specialized resources for the Namibian Cambridge Curriculum, combining international standards with local educational needs and cultural context.',
+      color: 'from-blue-400 to-green-400',
+      featured: true
     },
     {
       name: 'Canada',
@@ -152,7 +154,7 @@ const InternationalCurriculumsPage = () => {
             </Link>
 
             {/* Back Button */}
-            <Link 
+            <Link
               to="/"
               className="flex items-center space-x-2 text-slate-600 hover:text-teal-600 transition-colors duration-200 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg"
             >
@@ -167,38 +169,68 @@ const InternationalCurriculumsPage = () => {
       <main className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
-          <div 
+          <div
             ref={ref}
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
+            className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
           >
             <div className="inline-flex items-center bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200 rounded-full px-6 py-2 mb-6">
               <Globe className="h-5 w-5 mr-2 text-blue-600" />
               <span className="text-slate-700 font-medium">International Curricula</span>
             </div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent mb-4">
               Curriculum-Aligned Resources
             </h1>
+            <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-6 py-2 rounded-full inline-block mb-6">
+              <span className="font-semibold">🚀 Coming Soon</span>
+            </div>
             <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed">
-              Access thousands of educational resources curated specifically for different national curricula. 
-              From lesson plans to interactive activities, everything aligned with your country's educational standards.
+              We're expanding our curriculum-aligned resources to serve schools and institutions worldwide. 
+              Starting with the US Common Core standards, we're building a comprehensive library that will grow 
+              to include curricula from different countries as we partner with more schools globally.
             </p>
           </div>
 
           {/* Country Selection */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Choose Your Curriculum</h2>
+            <h2 className="text-3xl font-bold text-slate-800 mb-4 text-center">Choose Your Curriculum</h2>
+            <p className="text-slate-600 text-center mb-8 max-w-3xl mx-auto">
+              We currently offer comprehensive resources for the US Common Core curriculum. As we expand to partner 
+              with schools in different countries, we'll be curating resources for additional national curricula.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {countries.map((country, index) => (
                 <div
                   key={index}
                   onClick={() => setSelectedCountry(selectedCountry === country.name ? '' : country.name)}
-                  className={`cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                    selectedCountry === country.name ? 'ring-2 ring-blue-500' : ''
-                  }`}
+                  className={`cursor-pointer transition-all duration-300 transform hover:scale-105 relative ${selectedCountry === country.name ? 'ring-2 ring-blue-500' : ''
+                    } ${country.featured ? 'ring-2 ring-green-400 shadow-xl' : ''}`}
                 >
+                  {/* Featured Badge */}
+                  {country.featured && (
+                    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-400 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                      ⭐ Featured
+                    </div>
+                  )}
+
+                  {/* Lock Overlay - Only show for non-available curricula */}
+                  {!country.available && (
+                    <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center z-20">
+                      <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <span className="text-2xl">🔒</span>
+                        <span className="font-semibold text-slate-700">Coming Soon</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Available Badge for US */}
+                  {country.available && (
+                    <div className="absolute -top-3 -left-3 bg-gradient-to-r from-green-400 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                      ✅ Available Now
+                    </div>
+                  )}
+
                   <div className={`bg-gradient-to-r ${country.color} p-6 rounded-t-2xl text-white`}>
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-4xl">{country.flag}</span>
@@ -269,8 +301,69 @@ const InternationalCurriculumsPage = () => {
               </div>
 
               <div className="mt-8 text-center">
-                <button className="bg-gradient-to-r from-blue-400 to-purple-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  🚀 Coming Soon - Access {selectedCountryData.name} Resources
+                {selectedCountryData.available ? (
+                  // Available curriculum (US)
+                  <div className="bg-gradient-to-r from-green-100 to-teal-100 border border-green-200 rounded-xl p-6 mb-6">
+                    <div className="flex items-center justify-center space-x-3 mb-3">
+                      <span className="text-3xl">✅</span>
+                      <h4 className="text-xl font-bold text-green-800">Resources Available Now</h4>
+                    </div>
+                    <p className="text-green-700 text-sm mb-4">
+                      Access thousands of {selectedCountryData.name} curriculum-aligned resources including lesson plans, 
+                      assessments, interactive activities, and multimedia content.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">📚 Complete Library</span>
+                        <p className="text-green-600 mt-1">Thousands of resources ready</p>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">🎯 Standards Aligned</span>
+                        <p className="text-green-600 mt-1">Perfect curriculum match</p>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">🚀 Ready to Use</span>
+                        <p className="text-green-600 mt-1">Download or integrate now</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Coming soon curricula
+                  <div className="bg-gradient-to-r from-orange-100 to-yellow-100 border border-orange-200 rounded-xl p-6 mb-6">
+                    <div className="flex items-center justify-center space-x-3 mb-3">
+                      <span className="text-3xl">🔒</span>
+                      <h4 className="text-xl font-bold text-orange-800">Curriculum Expansion Planned</h4>
+                    </div>
+                    <p className="text-orange-700 text-sm mb-4">
+                      As we expand to partner with schools in {selectedCountryData.name}, we'll be curating comprehensive 
+                      resources aligned with the {selectedCountryData.curriculum} standards.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">🌍 Global Expansion</span>
+                        <p className="text-orange-600 mt-1">Growing with school partnerships</p>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">✅ Quality Curation</span>
+                        <p className="text-orange-600 mt-1">Expert content development</p>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg">
+                        <span className="font-semibold">🎯 Standards Focus</span>
+                        <p className="text-orange-600 mt-1">Perfect alignment planned</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <button className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                  selectedCountryData.available 
+                    ? 'bg-gradient-to-r from-green-400 to-teal-500 text-white hover:from-green-500 hover:to-teal-600' 
+                    : 'bg-gradient-to-r from-orange-400 to-red-500 text-white hover:from-orange-500 hover:to-red-600'
+                }`}>
+                  {selectedCountryData.available 
+                    ? `🚀 Access ${selectedCountryData.name} Resources` 
+                    : `🔮 Coming Soon - ${selectedCountryData.name} Resources`
+                  }
                 </button>
               </div>
             </div>
@@ -291,23 +384,31 @@ const InternationalCurriculumsPage = () => {
                 return (
                   <div
                     key={index}
-                    className={`bg-gradient-to-r ${resource.color} p-6 rounded-2xl border ${resource.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}
+                    className={`bg-gradient-to-r ${resource.color} p-6 rounded-2xl border ${resource.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 relative`}
                   >
+                    {/* Lock Overlay */}
+                    <div className="absolute inset-0 bg-black/10 rounded-2xl flex items-center justify-center">
+                      <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-lg flex items-center space-x-2">
+                        <span className="text-lg">🔒</span>
+                        <span className="font-semibold text-slate-700 text-sm">Curating</span>
+                      </div>
+                    </div>
+
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-3xl">{resource.emoji}</span>
+                      <span className="text-3xl opacity-70">{resource.emoji}</span>
                       <div className="bg-white/80 px-3 py-1 rounded-full">
                         <span className="font-bold text-slate-800">{resource.count}</span>
                       </div>
                     </div>
                     <h3 className="text-xl font-bold text-slate-800 mb-2">{resource.type}</h3>
                     <p className="text-slate-600 text-sm">{resource.description}</p>
-                    
+
                     <div className="mt-4 flex space-x-2">
-                      <button className="flex-1 bg-white/80 hover:bg-white text-slate-700 py-2 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2">
+                      <button disabled className="flex-1 bg-slate-300 text-slate-500 py-2 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center space-x-2">
                         <Download className="h-4 w-4" />
                         <span>Download</span>
                       </button>
-                      <button className="flex-1 bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2">
+                      <button disabled className="flex-1 bg-slate-400 text-slate-600 py-2 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center space-x-2">
                         <ExternalLink className="h-4 w-4" />
                         <span>Integrate</span>
                       </button>
@@ -333,12 +434,19 @@ const InternationalCurriculumsPage = () => {
                 return (
                   <div
                     key={index}
-                    className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-center cursor-pointer"
+                    className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-center cursor-pointer relative"
                   >
-                    <span className="text-4xl mb-3 block">{subject.emoji}</span>
+                    {/* Lock Overlay */}
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-orange-100 border border-orange-300 px-2 py-1 rounded-full">
+                        <span className="text-orange-600 text-xs">🔒</span>
+                      </div>
+                    </div>
+
+                    <span className="text-4xl mb-3 block opacity-70">{subject.emoji}</span>
                     <h3 className="font-bold text-slate-800 mb-2 text-sm">{subject.name}</h3>
-                    <div className="bg-gradient-to-r from-teal-100 to-blue-100 px-3 py-1 rounded-full">
-                      <span className="text-teal-700 font-medium text-xs">{subject.resources} resources</span>
+                    <div className="bg-gradient-to-r from-orange-100 to-yellow-100 px-3 py-1 rounded-full">
+                      <span className="text-orange-700 font-medium text-xs">{subject.resources} being curated</span>
                     </div>
                   </div>
                 );
@@ -361,13 +469,40 @@ const InternationalCurriculumsPage = () => {
                     <BookOpen className="h-8 w-8" />
                   </div>
                 </div>
-                
-                <h2 className="text-4xl font-bold mb-4">🚀 Coming Soon</h2>
+
+                <h2 className="text-4xl font-bold mb-4">🌍 Global Curriculum Expansion</h2>
                 <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-                  We're working hard to bring you thousands of curriculum-aligned resources for institutions worldwide. 
-                  Get ready for the most comprehensive educational resource library tailored to your country's standards.
+                  Starting with comprehensive US Common Core resources, we're expanding globally as we partner 
+                  with schools in different countries. Each new curriculum will be expertly curated and 
+                  perfectly aligned with local educational standards.
                 </p>
-                
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 max-w-4xl mx-auto">
+                  <h3 className="text-xl font-bold mb-4">Our Expansion Strategy</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">🏫</div>
+                      <p className="font-semibold">School Partnerships</p>
+                      <p className="text-white/80">Growing with educational institutions</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">📚</div>
+                      <p className="font-semibold">Content Curation</p>
+                      <p className="text-white/80">Expert resource development</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">✅</div>
+                      <p className="font-semibold">Quality Assurance</p>
+                      <p className="text-white/80">Rigorous review process</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">🎯</div>
+                      <p className="font-semibold">Local Alignment</p>
+                      <p className="text-white/80">Perfect standards match</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
                     <h3 className="font-bold text-lg mb-2">10,000+ Resources</h3>
@@ -383,7 +518,7 @@ const InternationalCurriculumsPage = () => {
                   </div>
                 </div>
 
-                <Link 
+                <Link
                   to="/"
                   className="inline-flex items-center space-x-2 bg-white text-orange-500 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50 transition-all duration-300 transform hover:scale-105"
                 >
