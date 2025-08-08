@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Eye, EyeOff, User, Lock, ChevronDown, Shield } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff, User, Lock, ChevronDown, Shield, ArrowLeft } from 'lucide-react';
 import { useAuth } from './auth/AuthContext';
 
 interface LoginProps {
   onLogin?: (userType: 'student' | 'educator' | 'admin') => void;
+  onBackToHome?: () => void;
 }
 
-const Login = ({ onLogin }: LoginProps) => {
+const Login = ({ onLogin, onBackToHome }: LoginProps) => {
   const navigate = useNavigate();
   const { login } = useAuth();
   
@@ -115,9 +116,27 @@ const Login = ({ onLogin }: LoginProps) => {
 
   const selectedType = userTypes.find(type => type.value === selectedUserType);
 
+  const handleBackToHome = () => {
+    if (onBackToHome) {
+      onBackToHome();
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-teal-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
+        {/* Back to Home Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center space-x-2 text-slate-600 hover:text-teal-600 transition-colors duration-200 group"
+          >
+            <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" />
+            <span className="font-medium">Back to Home</span>
+          </button>
+        </div>
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
