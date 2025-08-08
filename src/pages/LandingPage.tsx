@@ -7,6 +7,7 @@ import RegisteredSchools from '../components/RegisteredSchools';
 import Educators from '../components/Educators';
 import Footer from '../components/Footer';
 import Login from '../components/Login';
+import WaitlistForm from '../components/WaitlistForm';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import AdminLogin from '../components/admin/AdminLogin';
 import AdminDashboard from '../components/admin/AdminDashboard';
@@ -17,7 +18,7 @@ const LandingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, userType, isAuthenticated, logout } = useAuth();
-  const [currentView, setCurrentView] = useState<'landing' | 'login' | 'dashboard' | 'admin-login' | 'admin-dashboard'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'login' | 'waitlist' | 'dashboard' | 'admin-login' | 'admin-dashboard'>('landing');
 
   // Check if we should show dashboard based on navigation state or authentication
   useEffect(() => {
@@ -66,8 +67,16 @@ const LandingPage = () => {
     setCurrentView('landing');
   };
 
+  const handleWaitlistClick = () => {
+    setCurrentView('waitlist');
+  };
+
   if (currentView === 'login') {
-    return <Login onLogin={handleLogin} onBackToHome={handleBackToHome} />;
+    return <Login onLogin={handleLogin} onBackToHome={handleBackToHome} onWaitlistClick={handleWaitlistClick} />;
+  }
+
+  if (currentView === 'waitlist') {
+    return <WaitlistForm onBack={handleBackToHome} />;
   }
 
   if (currentView === 'admin-login') {
@@ -85,7 +94,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-teal-50">
       <Header onLoginClick={handleLoginClick} />
-      <Hero />
+      <Hero onWaitlistClick={handleWaitlistClick} />
       <Features />
       <RegisteredSchools />
       <Educators />
