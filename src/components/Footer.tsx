@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { GraduationCap, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Send } from 'lucide-react';
+import { GraduationCap, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Send, Heart } from 'lucide-react';
 
-const Footer = () => {
+interface FooterProps {
+  onDonationClick?: () => void;
+}
+
+const Footer = ({ onDonationClick }: FooterProps) => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -110,6 +114,13 @@ const Footer = () => {
                   <span className="mr-2">ℹ️</span>
                   About Us
                 </a>
+                <button 
+                  onClick={onDonationClick}
+                  className="text-slate-400 hover:text-green-400 transition-colors duration-200 text-left flex items-center"
+                >
+                  <span className="mr-2">💝</span>
+                  Support Our Mission
+                </button>
               </nav>
             </div>
 
@@ -183,6 +194,15 @@ const Footer = () => {
                   </span>
                 </div>
               </div>
+              {/* Donation Button */}
+              <button
+                onClick={onDonationClick}
+                className="w-full bg-gradient-to-r from-green-400 to-teal-500 text-white py-3 px-4 rounded-lg font-medium hover:from-green-500 hover:to-teal-600 transition-all duration-200 flex items-center justify-center space-x-2 mb-4"
+              >
+                <Heart className="h-4 w-4" />
+                <span>Support Education</span>
+              </button>
+              
               <div className="flex flex-col space-y-2">
                 <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors duration-200 text-sm flex items-center">
                   <span className="mr-2">📄</span>
