@@ -91,6 +91,14 @@ const Header = ({ onLoginClick }: HeaderProps) => {
               Resources
             </Link>
             <Link 
+              to="/international-curricula"
+              className={`transition-colors duration-200 hover:text-teal-500 ${
+                isScrolled ? 'text-slate-600' : 'text-slate-700'
+              }`}
+            >
+              Curricula
+            </Link>
+            <Link 
               to="/pricing"
               className={`transition-colors duration-200 hover:text-teal-500 ${
                 isScrolled ? 'text-slate-600' : 'text-slate-700'
@@ -189,6 +197,13 @@ const Header = ({ onLoginClick }: HeaderProps) => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Resources
+              </Link>
+              <Link 
+                to="/international-curricula"
+                className="text-slate-600 hover:text-teal-500 transition-colors duration-200 text-left"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                International Curricula
               </Link>
               <Link 
                 to="/pricing"
