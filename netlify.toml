@@ -1,2 +1,19 @@
 [build]
 functions = "netlify/functions"
+publish = "dist"
+
+# Proxy API calls to Cloudflare Pages backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://tulo-afrika.pages.dev/api/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+
+# Handle CORS preflight requests
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

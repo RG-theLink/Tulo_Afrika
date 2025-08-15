@@ -1,5 +1,7 @@
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// Use Cloudflare Pages API in production (when deployed on Netlify)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? 'https://tulo-afrika.pages.dev/api' : '/api');
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => localStorage.getItem('authToken');
