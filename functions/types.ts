@@ -4,6 +4,8 @@ export interface Env {
   AI: any;
   OPENROUTER_API_KEY: string;
   OPENROUTER_API_URL: string;
+  CLOUDFLARE_ACCOUNT_ID: string;
+  CLOUDFLARE_AI_TOKEN: string;
 }
 
 export interface User {

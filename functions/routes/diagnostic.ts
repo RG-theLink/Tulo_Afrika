@@ -24,6 +24,7 @@ async function handleStatus(env: Env): Promise<Response> {
       has_db: !!env.DB,
       has_kv: !!env.SESSIONS,
       has_ai: !!env.AI,
+      has_cloudflare_ai_token: !!(env.CLOUDFLARE_AI_TOKEN && env.CLOUDFLARE_ACCOUNT_ID),
       has_openrouter_key: !!(env.OPENROUTER_API_KEY && env.OPENROUTER_API_KEY !== 'YOUR_API_KEY_HERE'),
       openrouter_url: env.OPENROUTER_API_URL || 'not set (will use default)',
     },
@@ -32,7 +33,8 @@ async function handleStatus(env: Env): Promise<Response> {
       tables: []
     },
     ai_providers: {
-      cloudflare: !!env.AI ? 'available' : 'not available',
+      cloudflare_rest: !!(env.CLOUDFLARE_AI_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) ? 'configured' : 'not configured',
+      cloudflare_binding: !!env.AI ? 'available' : 'not available',
       openrouter: !!(env.OPENROUTER_API_KEY && env.OPENROUTER_API_KEY !== 'YOUR_API_KEY_HERE') ? 'configured' : 'not configured'
     }
   };
@@ -61,23 +63,39 @@ async function handleTestAI(env: Env): Promise<Response> {
     }
   };
   
-  // Test Cloudflare AI
-  if (env.AI) {
+  // Test Cloudflare AI REST API
+  if (env.CLOUDFLARE_AI_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) {
     try {
-      const cfResponse = await env.AI.run('@cf/meta/llama-2-7b-chat-int8', {
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant. Answer in one sentence.' },
-          { role: 'user', content: 'What is 2+2?' }
-        ]
-      });
-      results.tests.cloudflare_ai.status = 'success';
-      results.tests.cloudflare_ai.response = cfResponse.response;
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.CLOUDFLARE_AI_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            prompt: 'What is 2+2? Answer in one sentence.',
+            max_tokens: 50
+          })
+        }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        results.tests.cloudflare_ai.status = 'success';
+        results.tests.cloudflare_ai.response = data.result?.response || data.result?.text || 'Response received';
+      } else {
+        const errorText = await response.text();
+        results.tests.cloudflare_ai.status = 'error';
+        results.tests.cloudflare_ai.error = `HTTP ${response.status}: ${errorText}`;
+      }
     } catch (error: any) {
       results.tests.cloudflare_ai.status = 'error';
       results.tests.cloudflare_ai.error = error.message;
     }
   } else {
-    results.tests.cloudflare_ai.status = 'not_available';
+    results.tests.cloudflare_ai.status = 'not_configured';
   }
   
   // Test OpenRouter
