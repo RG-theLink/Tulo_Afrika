@@ -6,9 +6,9 @@ import crypto from 'crypto';
 const app = express();
 const PORT = 3001;
 
-// OpenRouter Configuration
-const OPENROUTER_API_KEY = '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';
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1';
+// OpenRouter Configuration - Use environment variables
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || 'YOUR_API_KEY_HERE';
+const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1';
 
 // In-memory storage for development
 const users = new Map();
@@ -161,7 +161,7 @@ app.post('/api/ai/chat', requireAuth, async (req, res) => {
         'X-Title': 'Tulo Afrika Educational Platform'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'openai/gpt-oss-20b', // Free model
         messages: [
           {
             role: 'system',
@@ -228,7 +228,7 @@ app.post('/api/ai/search', requireAuth, async (req, res) => {
         'X-Title': 'Tulo Afrika Educational Platform'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'openai/gpt-oss-20b', // Free model
         messages: [
           {
             role: 'system',
@@ -302,7 +302,7 @@ app.post('/api/ai/copilot', requireAuth, async (req, res) => {
         'X-Title': 'Tulo Afrika Educational Platform'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'openai/gpt-oss-20b', // Free model
         messages,
         temperature: 0.7,
         max_tokens: 1200

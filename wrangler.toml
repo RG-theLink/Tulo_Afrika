@@ -1,7 +1,6 @@
 name = "tulo-afrika"
-main = "functions/api/[[path]].ts"
-compatibility_date = "2024-01-01"
 pages_build_output_dir = "dist"
+compatibility_date = "2024-01-01"
 
 # D1 Database configuration
 [[d1_databases]]
@@ -14,14 +13,5 @@ database_id = "475e676a-195d-4ab5-9ddc-c83f2cf37ac9"
 binding = "SESSIONS"
 id = "0a6c7569067047a9b141acbd7d3ea374"
 
-# Environment variables
-[vars]
-OPENROUTER_API_KEY = "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"
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1"
-
-# Build configuration
-[build]
-command = "npm run build"
-
-# Compatibility flags for Node.js APIs
-compatibility_flags = ["nodejs_compat"]
+# Environment variables should be set in Cloudflare Dashboard, not here
+# Do not commit API keys to the repository

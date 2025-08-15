@@ -60,7 +60,7 @@ async function handleChat(request: Request, env: Env, user: any): Promise<Respon
           content: body.message
         }
       ],
-      model: 'gpt-oss-20b',
+      model: 'openai/gpt-oss-20b', // Free OpenAI model
       temperature: 0.7,
       max_tokens: 1000
     }, env);
@@ -108,7 +108,7 @@ async function handleSearch(request: Request, env: Env, user: any): Promise<Resp
           content: `Search and explain: ${body.query}`
         }
       ],
-      model: 'gpt-oss-20b',
+      model: 'openai/gpt-oss-20b', // Free OpenAI model
       temperature: 0.5,
       max_tokens: 1500
     }, env);
@@ -167,7 +167,7 @@ async function handleCopilot(request: Request, env: Env, user: any): Promise<Res
     // Call OpenRouter API
     const response = await callOpenRouter({
       messages,
-      model: 'gpt-oss-20b',
+      model: 'openai/gpt-oss-20b', // Free OpenAI model
       temperature: 0.7,
       max_tokens: 1200
     }, env);
@@ -197,7 +197,7 @@ async function callOpenRouter(request: AIRequest, env: Env): Promise<{ content: 
       'X-Title': 'Tulo Afrika Educational Platform'
     },
     body: JSON.stringify({
-      model: request.model || 'gpt-oss-20b',
+      model: request.model || 'openai/gpt-oss-20b', // Free OpenAI model
       messages: request.messages,
       temperature: request.temperature || 0.7,
       max_tokens: request.max_tokens || 1000,
