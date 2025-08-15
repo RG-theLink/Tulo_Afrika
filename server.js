@@ -376,6 +376,81 @@ app.post('/api/waitlist', (req, res) => {
   });
 });
 
+// Diagnostic endpoints
+app.get('/api/diagnostic/status', (req, res) => {
+  const status = {
+    timestamp: new Date().toISOString(),
+    environment: {
+      mode: 'development',
+      has_openrouter_key: OPENROUTER_API_KEY !== 'YOUR_API_KEY_HERE',
+      openrouter_url: OPENROUTER_API_URL,
+      node_version: process.version
+    },
+    memory: {
+      users: users.size,
+      sessions: sessions.size,
+      chatHistory: chatHistory.length,
+      searchHistory: searchHistory.length
+    },
+    ai_providers: {
+      openrouter: OPENROUTER_API_KEY !== 'YOUR_API_KEY_HERE' ? 'configured' : 'not configured',
+      cloudflare: 'not available (local dev)'
+    }
+  };
+  res.json(status);
+});
+
+app.get('/api/diagnostic/test-ai', async (req, res) => {
+  const results = {
+    timestamp: new Date().toISOString(),
+    tests: {
+      openrouter: { status: 'not_tested', response: null, error: null }
+    }
+  };
+  
+  // Test OpenRouter
+  if (OPENROUTER_API_KEY !== 'YOUR_API_KEY_HERE') {
+    try {
+      const response = await fetch(`${OPENROUTER_API_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'http://localhost:3000',
+          'X-Title': 'Tulo Afrika Development'
+        },
+        body: JSON.stringify({
+          model: 'openai/gpt-oss-20b',
+          messages: [
+            { role: 'system', content: 'You are a helpful assistant. Answer in one sentence.' },
+            { role: 'user', content: 'What is 2+2?' }
+          ],
+          temperature: 0.1,
+          max_tokens: 50,
+          stream: false
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        results.tests.openrouter.status = 'success';
+        results.tests.openrouter.response = data.choices[0].message.content;
+      } else {
+        const errorText = await response.text();
+        results.tests.openrouter.status = 'error';
+        results.tests.openrouter.error = `HTTP ${response.status}: ${errorText}`;
+      }
+    } catch (error) {
+      results.tests.openrouter.status = 'error';
+      results.tests.openrouter.error = error.message;
+    }
+  } else {
+    results.tests.openrouter.status = 'not_configured';
+  }
+  
+  res.json(results);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
@@ -385,4 +460,6 @@ app.listen(PORT, () => {
   console.log('- POST /api/ai/chat');
   console.log('- POST /api/ai/search');
   console.log('- POST /api/ai/copilot');
+  console.log('- GET /api/diagnostic/status');
+  console.log('- GET /api/diagnostic/test-ai');
 });
