@@ -7,12 +7,12 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "tulo-afrika-db"
-database_id = "YOUR_DATABASE_ID_HERE" # You'll get this after creating D1 database
+database_id = "475e676a-195d-4ab5-9ddc-c83f2cf37ac9"
 
 # KV Namespace for sessions
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "YOUR_KV_NAMESPACE_ID_HERE" # You'll get this after creating KV namespace
+id = "0a6c7569067047a9b141acbd7d3ea374"
 
 # Environment variables
 [vars]
