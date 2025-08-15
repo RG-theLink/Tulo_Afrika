@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Send, Sparkles, MessageCircle, Brain } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Send, Sparkles, MessageCircle, Brain, AlertCircle } from 'lucide-react';
+import { ai } from '../../../lib/api';
 
 interface AICoPilotWidgetProps {
   userType: 'student' | 'educator' | 'admin';
@@ -9,6 +9,8 @@ interface AICoPilotWidgetProps {
 const AICoPilotWidget = ({ userType }: AICoPilotWidgetProps) => {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [response, setResponse] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const getSuggestions = () => {
     switch (userType) {
@@ -66,15 +68,43 @@ const AICoPilotWidget = ({ userType }: AICoPilotWidgetProps) => {
     }
   };
 
-  const handleSend = () => {
+  const getQuestionType = (question: string): 'homework' | 'explanation' | 'practice' | 'general' => {
+    const lowerQuestion = question.toLowerCase();
+    
+    if (lowerQuestion.includes('homework') || lowerQuestion.includes('solve') || lowerQuestion.includes('calculate')) {
+      return 'homework';
+    } else if (lowerQuestion.includes('explain') || lowerQuestion.includes('what is') || lowerQuestion.includes('how does')) {
+      return 'explanation';
+    } else if (lowerQuestion.includes('practice') || lowerQuestion.includes('exercise') || lowerQuestion.includes('quiz')) {
+      return 'practice';
+    }
+    
+    return 'general';
+  };
+
+  const handleSend = async () => {
     if (message.trim()) {
       setIsTyping(true);
-      // Simulate AI response
-      setTimeout(() => {
-        setIsTyping(false);
+      setError(null);
+      setResponse(null);
+      
+      try {
+        const questionType = getQuestionType(message);
+        const result = await ai.copilot(message, undefined, questionType);
+        setResponse(result.response);
         setMessage('');
-      }, 2000);
+      } catch (err) {
+        console.error('Co-pilot error:', err);
+        setError('Sorry, I encountered an error. Please try again.');
+      } finally {
+        setIsTyping(false);
+      }
     }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setMessage(suggestion);
+    handleSend();
   };
 
   return (
@@ -99,16 +129,21 @@ const AICoPilotWidget = ({ userType }: AICoPilotWidgetProps) => {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleSend()}
               placeholder={`Ask a question about your ${userType === 'student' ? 'studies' : userType === 'educator' ? 'teaching' : 'institution'}...`}
               className="w-full pl-4 pr-12 py-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80"
+              disabled={isTyping}
             />
             <button
               onClick={handleSend}
-              disabled={!message.trim()}
+              disabled={!message.trim() || isTyping}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-400 to-pink-500 text-white p-2 rounded-lg hover:from-purple-500 hover:to-pink-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Send className="h-4 w-4" />
+              {isTyping ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
             </button>
           </div>
         </div>
@@ -130,22 +165,49 @@ const AICoPilotWidget = ({ userType }: AICoPilotWidgetProps) => {
           </div>
         )}
 
-        {/* Quick Suggestions */}
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-700 mb-3">Quick Questions:</h3>
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              onClick={() => setMessage(suggestion)}
-              className="w-full text-left p-3 bg-white/60 hover:bg-white/80 rounded-lg border border-purple-100 hover:border-purple-300 transition-all duration-200 text-sm text-slate-700 hover:text-purple-700"
-            >
-              <div className="flex items-center space-x-2">
-                <MessageCircle className="h-4 w-4 text-purple-400" />
-                <span>{suggestion}</span>
+        {/* Response Display */}
+        {response && (
+          <div className="mb-4 p-4 bg-white/90 rounded-xl border border-purple-200">
+            <div className="flex items-start space-x-2">
+              <div className="bg-gradient-to-r from-purple-400 to-pink-500 p-1 rounded-full mt-1">
+                <Sparkles className="h-3 w-3 text-white" />
               </div>
-            </button>
-          ))}
-        </div>
+              <div className="flex-1">
+                <p className="text-sm text-slate-700 whitespace-pre-wrap">{response}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 rounded-xl border border-red-200">
+            <div className="flex items-start space-x-2">
+              <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Suggestions */}
+        {!response && !isTyping && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-slate-700 mb-3">Quick Questions:</h3>
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                disabled={isTyping}
+                className="w-full text-left p-3 bg-white/60 hover:bg-white/80 rounded-lg border border-purple-100 hover:border-purple-300 transition-all duration-200 text-sm text-slate-700 hover:text-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div className="flex items-center space-x-2">
+                  <MessageCircle className="h-4 w-4 text-purple-400" />
+                  <span>{suggestion}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* AI Features */}
         <div className="mt-6 p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl border border-purple-200">

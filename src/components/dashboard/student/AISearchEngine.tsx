@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Send, Sparkles, MessageCircle, BookOpen, Calculator, Globe, Lightbulb, Clock, Star } from 'lucide-react';
+import { ai } from '../../../lib/api';
 
 const AISearchEngine = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Array<{id: string, type: 'user' | 'ai', content: string, timestamp: Date}>>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isChatting, setIsChatting] = useState(false);
   const [activeTab, setActiveTab] = useState<'search' | 'chat'>('search');
+  const [sessionId] = useState(() => `session-${Date.now()}`);
+  const [recentSearches, setRecentSearches] = useState<Array<{query: string, time: string}>>([]);
+
+  useEffect(() => {
+    // Load recent searches from localStorage
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, []);
 
   const quickSearches = [
     { query: 'Explain photosynthesis', icon: '🌱', category: 'Biology' },
@@ -18,24 +31,28 @@ const AISearchEngine = () => {
     { query: 'Art history Renaissance', icon: '🎨', category: 'Art' }
   ];
 
-  const recentSearches = [
-    { query: 'How to write a thesis statement', time: '2 hours ago' },
-    { query: 'Calculus derivatives explained', time: '1 day ago' },
-    { query: 'Periodic table elements', time: '2 days ago' },
-    { query: 'Essay writing techniques', time: '3 days ago' }
-  ];
-
   const handleSearch = async (query: string) => {
     if (!query.trim()) return;
     
     setIsSearching(true);
     setSearchQuery(query);
+    setSearchResults(null);
     
-    // Simulate AI search
-    setTimeout(() => {
+    try {
+      const response = await ai.search(query);
+      setSearchResults(response.results);
+      
+      // Save to recent searches
+      const newSearch = { query, time: 'Just now' };
+      const updated = [newSearch, ...recentSearches.filter(s => s.query !== query)].slice(0, 5);
+      setRecentSearches(updated);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults('Sorry, there was an error processing your search. Please try again.');
+    } finally {
       setIsSearching(false);
-      // In a real implementation, this would show search results
-    }, 2000);
+    }
   };
 
   const handleChatMessage = async (message: string) => {
@@ -49,22 +66,50 @@ const AISearchEngine = () => {
     };
 
     setChatMessages(prev => [...prev, userMessage]);
+    setIsChatting(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await ai.chat(message, sessionId);
+      
       const aiResponse = {
         id: (Date.now() + 1).toString(),
         type: 'ai' as const,
-        content: `I understand you're asking about "${message}". Let me help you with that. This is a comprehensive topic that involves several key concepts...`,
+        content: response.response,
         timestamp: new Date()
       };
+      
       setChatMessages(prev => [...prev, aiResponse]);
-    }, 1000);
+    } catch (error) {
+      console.error('Chat error:', error);
+      const errorResponse = {
+        id: (Date.now() + 1).toString(),
+        type: 'ai' as const,
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, errorResponse]);
+    } finally {
+      setIsChatting(false);
+    }
   };
 
   const handleQuickSearch = (query: string) => {
     setSearchQuery(query);
     handleSearch(query);
+  };
+
+  const formatSearchResults = (results: string) => {
+    // Split results into paragraphs for better formatting
+    const paragraphs = results.split('\n\n');
+    return paragraphs.map((paragraph, index) => (
+      <div key={index} className="mb-4">
+        {paragraph.split('\n').map((line, lineIndex) => (
+          <p key={lineIndex} className="mb-2 text-slate-700 leading-relaxed">
+            {line}
+          </p>
+        ))}
+      </div>
+    ));
   };
 
   return (
@@ -143,53 +188,72 @@ const AISearchEngine = () => {
             </div>
           </div>
 
-          {/* Quick Search Suggestions */}
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
-              <Lightbulb className="h-6 w-6 text-yellow-500" />
-              <span>Quick Search Suggestions</span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quickSearches.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleQuickSearch(item.query)}
-                  className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200 hover:border-purple-300 transition-all duration-200 hover:transform hover:scale-105 hover:shadow-lg text-left"
-                >
-                  <div className="flex items-center space-x-3 mb-2">
-                    <span className="text-2xl">{item.icon}</span>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-                      {item.category}
-                    </span>
-                  </div>
-                  <p className="text-slate-700 font-medium">{item.query}</p>
-                </button>
-              ))}
+          {/* Search Results */}
+          {searchResults && !isSearching && (
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 p-8 shadow-lg">
+                <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center space-x-2">
+                  <Sparkles className="h-6 w-6 text-purple-500" />
+                  <span>Search Results for: "{searchQuery}"</span>
+                </h3>
+                <div className="prose prose-slate max-w-none">
+                  {formatSearchResults(searchResults)}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Quick Search Suggestions */}
+          {!searchResults && (
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
+                <Lightbulb className="h-6 w-6 text-yellow-500" />
+                <span>Quick Search Suggestions</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {quickSearches.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleQuickSearch(item.query)}
+                    className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200 hover:border-purple-300 transition-all duration-200 hover:transform hover:scale-105 hover:shadow-lg text-left"
+                  >
+                    <div className="flex items-center space-x-3 mb-2">
+                      <span className="text-2xl">{item.icon}</span>
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                        {item.category}
+                      </span>
+                    </div>
+                    <p className="text-slate-700 font-medium">{item.query}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Recent Searches */}
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
-              <Clock className="h-6 w-6 text-blue-500" />
-              <span>Recent Searches</span>
-            </h2>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
-              {recentSearches.map((search, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleQuickSearch(search.query)}
-                  className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Search className="h-5 w-5 text-slate-400" />
-                    <span className="text-slate-700">{search.query}</span>
-                  </div>
-                  <span className="text-sm text-slate-500">{search.time}</span>
-                </button>
-              ))}
+          {recentSearches.length > 0 && !searchResults && (
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
+                <Clock className="h-6 w-6 text-blue-500" />
+                <span>Recent Searches</span>
+              </h2>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+                {recentSearches.map((search, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleQuickSearch(search.query)}
+                    className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Search className="h-5 w-5 text-slate-400" />
+                      <span className="text-slate-700">{search.query}</span>
+                    </div>
+                    <span className="text-sm text-slate-500">{search.time}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Search Results Area */}
           {isSearching && (
@@ -241,13 +305,24 @@ const AISearchEngine = () => {
                         ? 'bg-gradient-to-r from-purple-400 to-pink-500 text-white' 
                         : 'bg-slate-100 text-slate-800'
                     }`}>
-                      <p>{message.content}</p>
+                      <p className="whitespace-pre-wrap">{message.content}</p>
                       <p className={`text-xs mt-2 ${message.type === 'user' ? 'text-white/80' : 'text-slate-500'}`}>
                         {message.timestamp.toLocaleTimeString()}
                       </p>
                     </div>
                   </div>
                 ))
+              )}
+              {isChatting && (
+                <div className="flex justify-start">
+                  <div className="bg-slate-100 px-4 py-3 rounded-2xl">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -258,8 +333,9 @@ const AISearchEngine = () => {
                   type="text"
                   placeholder="Type your question here..."
                   className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  disabled={isChatting}
                   onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !isChatting) {
                       handleChatMessage(e.currentTarget.value);
                       e.currentTarget.value = '';
                     }
@@ -268,10 +344,13 @@ const AISearchEngine = () => {
                 <button
                   onClick={(e) => {
                     const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-                    handleChatMessage(input.value);
-                    input.value = '';
+                    if (!isChatting && input.value.trim()) {
+                      handleChatMessage(input.value);
+                      input.value = '';
+                    }
                   }}
-                  className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-6 py-3 rounded-xl hover:from-purple-500 hover:to-pink-600 transition-all duration-200 flex items-center space-x-2"
+                  disabled={isChatting}
+                  className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-6 py-3 rounded-xl hover:from-purple-500 hover:to-pink-600 transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="h-5 w-5" />
                   <span>Send</span>

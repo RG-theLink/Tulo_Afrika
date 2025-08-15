@@ -1,0 +1,31 @@
+name = "tulo-afrika-app"
+main = "functions/api/[[path]].ts"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "dist"
+
+# D1 Database configuration
+[[d1_databases]]
+binding = "DB"
+database_name = "tulo-afrika-db"
+database_id = "your-database-id-here"
+
+# KV Namespace for sessions
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "your-kv-namespace-id"
+
+# Environment variables
+[vars]
+OPENROUTER_API_KEY = "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"
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1"
+
+# AI configuration
+[ai]
+binding = "AI"
+
+# Build configuration
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "service-worker"
