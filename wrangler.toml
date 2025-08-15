@@ -12,5 +12,9 @@ database_id = "475e676a-195d-4ab5-9ddc-c83f2cf37ac9"
 binding = "SESSIONS"
 id = "0a6c7569067047a9b141acbd7d3ea374"
 
+# Enable Cloudflare Workers AI
+[ai]
+binding = "AI"
+
 # Environment variables should be set in Cloudflare Dashboard, not here
 # Do not commit API keys to the repository

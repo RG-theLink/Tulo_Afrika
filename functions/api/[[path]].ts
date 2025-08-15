@@ -5,6 +5,7 @@ import { usersRouter } from '../routes/users';
 import { resourcesRouter } from '../routes/resources';
 import { messagesRouter } from '../routes/messages';
 import { waitlistRouter } from '../routes/waitlist';
+import { diagnosticRouter } from '../routes/diagnostic';
 import { corsHeaders } from '../utils/cors';
 
 export const onRequest: PagesFunction<Env> = async (context) => {
@@ -49,6 +50,11 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // Waitlist routes
     if (pathString.startsWith('waitlist')) {
       return await waitlistRouter(request, env, path.slice(1));
+    }
+    
+    // Diagnostic routes (for debugging)
+    if (pathString.startsWith('diagnostic')) {
+      return await diagnosticRouter(request, env, path.slice(1));
     }
     
     // Default 404 response

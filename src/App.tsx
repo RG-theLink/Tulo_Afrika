@@ -13,6 +13,7 @@ import MessagingPage from './pages/MessagingPage';
 import { useAuth } from './components/auth/AuthContext';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AIDebugPanel from './components/dashboard/AIDebugPanel';
 
 function App() {
   const { user, logout } = useAuth();
@@ -36,6 +37,7 @@ function App() {
         <Route path="/messaging" element={<MessagingPage />} />
         <Route path="/dashboard" element={<DashboardLayout onLogout={handleLogout} />} />
         <Route path="/admin" element={<AdminDashboard onLogout={handleLogout} />} />
+        <Route path="/debug/ai" element={<AIDebugPanel />} />
       </Routes>
     </Router>
   );
