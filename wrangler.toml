@@ -5,8 +5,8 @@ pages_build_output_dir = "dist"
 # D1 Database configuration
 [[d1_databases]]
 binding = "DB"
-database_name = "tulo-afrika-db"
-database_id = "475e676a-195d-4ab5-9ddc-c83f2cf37ac9"
+database_name = "tulo-db"
+database_id = "78845220-9123-4a9d-a008-40ebfcd3d578"
 
 # KV Namespace for sessions
 [[kv_namespaces]]
