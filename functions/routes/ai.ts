@@ -70,13 +70,13 @@ async function handleChat(request: Request, env: Env, user: any): Promise<Respon
       }
     }
     
-    // Try Cloudflare Workers AI REST API first
+    // Try Google Gemma first, then fall back
     let response: { content: string };
-    let aiProvider = 'cloudflare';
+    let aiProvider = 'google-gemma';
     
     try {
-      console.log('Chat - Attempting Cloudflare Workers AI REST API');
-      response = await callCloudflareAIRest({
+      console.log('Chat - Attempting Google Gemma via AI Studio');
+      response = await callGoogleGemma({
         messages: [
           {
             role: 'system',
@@ -90,14 +90,14 @@ async function handleChat(request: Request, env: Env, user: any): Promise<Respon
           }
         ]
       }, env);
-      console.log('Chat - Cloudflare AI successful');
-    } catch (cfError: any) {
-      console.error('Chat - Cloudflare AI failed, trying OpenRouter:', cfError.message);
-      aiProvider = 'openrouter';
+      console.log('Chat - Google Gemma successful');
+    } catch (gemmaError: any) {
+      console.error('Chat - Google Gemma failed, trying Cloudflare Workers AI:', gemmaError.message);
+      aiProvider = 'cloudflare';
       
-      // Fallback to OpenRouter
       try {
-        response = await callOpenRouter({
+        console.log('Chat - Attempting Cloudflare Workers AI REST API');
+        response = await callCloudflareAIRest({
           messages: [
             {
               role: 'system',
@@ -109,18 +109,40 @@ async function handleChat(request: Request, env: Env, user: any): Promise<Respon
               role: 'user',
               content: body.message
             }
-          ],
-          model: 'openai/gpt-3.5-turbo',
-          temperature: 0.7,
-          max_tokens: 1000
+          ]
         }, env);
-      } catch (orError: any) {
-        console.error('Chat - OpenRouter also failed:', orError.message);
-        // Provide a helpful error response
-        response = {
-          content: "I apologize, but I'm having trouble connecting to the AI service. This could be due to: \n\n1. API keys not being properly configured\n2. Rate limits being exceeded\n3. Network connectivity issues\n\nPlease try again in a moment or contact support if the issue persists."
-        };
-        aiProvider = 'fallback';
+        console.log('Chat - Cloudflare AI successful');
+      } catch (cfError: any) {
+        console.error('Chat - Cloudflare AI failed, trying OpenRouter:', cfError.message);
+        aiProvider = 'openrouter';
+        
+        // Fallback to OpenRouter
+        try {
+          response = await callOpenRouter({
+            messages: [
+              {
+                role: 'system',
+                content: `You are a helpful educational AI assistant for Tulo Afrika. 
+                  You help ${user.role === 'student' ? 'students learn' : user.role === 'educator' ? 'educators teach' : 'users'} effectively.
+                  Provide clear, concise, and educational responses.`
+              },
+              {
+                role: 'user',
+                content: body.message
+              }
+            ],
+            model: 'openai/gpt-3.5-turbo',
+            temperature: 0.7,
+            max_tokens: 1000
+          }, env);
+        } catch (orError: any) {
+          console.error('Chat - OpenRouter also failed:', orError.message);
+          // Provide a helpful error response
+          response = {
+            content: "I apologize, but I'm having trouble connecting to the AI service. This could be due to: \n\n1. API keys not being properly configured\n2. Rate limits being exceeded\n3. Network connectivity issues\n\nPlease try again in a moment or contact support if the issue persists."
+          };
+          aiProvider = 'fallback';
+        }
       }
     }
     
@@ -171,13 +193,13 @@ async function handleSearch(request: Request, env: Env, user: any): Promise<Resp
       }
     }
     
-    // Try Cloudflare Workers AI REST API first
+    // Try Google Gemma first, then fall back
     let response: { content: string };
-    let aiProvider = 'cloudflare';
+    let aiProvider = 'google-gemma';
     
     try {
-      console.log('Search - Attempting Cloudflare Workers AI REST API');
-      response = await callCloudflareAIRest({
+      console.log('Search - Attempting Google Gemma via AI Studio');
+      response = await callGoogleGemma({
         messages: [
           {
             role: 'system',
@@ -190,14 +212,14 @@ async function handleSearch(request: Request, env: Env, user: any): Promise<Resp
           }
         ]
       }, env);
-      console.log('Search - Cloudflare AI successful');
-    } catch (cfError: any) {
-      console.error('Search - Cloudflare AI failed, trying OpenRouter:', cfError.message);
-      aiProvider = 'openrouter';
+      console.log('Search - Google Gemma successful');
+    } catch (gemmaError: any) {
+      console.error('Search - Google Gemma failed, trying Cloudflare Workers AI:', gemmaError.message);
+      aiProvider = 'cloudflare';
       
-      // Fallback to OpenRouter
       try {
-        response = await callOpenRouter({
+        console.log('Search - Attempting Cloudflare Workers AI REST API');
+        response = await callCloudflareAIRest({
           messages: [
             {
               role: 'system',
@@ -208,17 +230,38 @@ async function handleSearch(request: Request, env: Env, user: any): Promise<Resp
               role: 'user',
               content: `Search and explain: ${body.query}`
             }
-          ],
-          model: 'openai/gpt-3.5-turbo',
-          temperature: 0.5,
-          max_tokens: 1500
+          ]
         }, env);
-      } catch (orError: any) {
-        console.error('Search - OpenRouter also failed:', orError.message);
-        response = {
-          content: `I couldn't complete the search for "${body.query}" due to a technical issue. Please ensure the AI services are properly configured and try again.`
-        };
-        aiProvider = 'fallback';
+        console.log('Search - Cloudflare AI successful');
+      } catch (cfError: any) {
+        console.error('Search - Cloudflare AI failed, trying OpenRouter:', cfError.message);
+        aiProvider = 'openrouter';
+        
+        // Fallback to OpenRouter
+        try {
+          response = await callOpenRouter({
+            messages: [
+              {
+                role: 'system',
+                content: `You are an educational search assistant. Provide comprehensive, accurate information about the topic.
+                  Format your response with clear sections, examples, and explanations suitable for learning.`
+              },
+              {
+                role: 'user',
+                content: `Search and explain: ${body.query}`
+              }
+            ],
+            model: 'openai/gpt-3.5-turbo',
+            temperature: 0.5,
+            max_tokens: 1500
+          }, env);
+        } catch (orError: any) {
+          console.error('Search - OpenRouter also failed:', orError.message);
+          response = {
+            content: `I couldn't complete the search for "${body.query}" due to a technical issue. Please ensure the AI services are properly configured and try again.`
+          };
+          aiProvider = 'fallback';
+        }
       }
     }
     
@@ -274,32 +317,41 @@ async function handleCopilot(request: Request, env: Env, user: any): Promise<Res
       messages.splice(1, 0, { role: 'system' as const, content: `Context: ${body.context}` });
     }
     
-    // Try Cloudflare Workers AI REST API first
+    // Try Google Gemma first, then fall back
     let response: { content: string };
-    let aiProvider = 'cloudflare';
+    let aiProvider = 'google-gemma';
     
     try {
-      console.log('Copilot - Attempting Cloudflare Workers AI REST API');
-      response = await callCloudflareAIRest({ messages }, env);
-      console.log('Copilot - Cloudflare AI successful');
-    } catch (cfError: any) {
-      console.error('Copilot - Cloudflare AI failed, trying OpenRouter:', cfError.message);
-      aiProvider = 'openrouter';
+      console.log('Copilot - Attempting Google Gemma via AI Studio');
+      response = await callGoogleGemma({ messages }, env);
+      console.log('Copilot - Google Gemma successful');
+    } catch (gemmaError: any) {
+      console.error('Copilot - Google Gemma failed, trying Cloudflare Workers AI:', gemmaError.message);
+      aiProvider = 'cloudflare';
       
-      // Fallback to OpenRouter
       try {
-        response = await callOpenRouter({
-          messages,
-          model: 'openai/gpt-3.5-turbo',
-          temperature: 0.7,
-          max_tokens: 1200
-        }, env);
-      } catch (orError: any) {
-        console.error('Copilot - OpenRouter also failed:', orError.message);
-        response = {
-          content: "I'm currently unable to assist due to a technical issue. Please try again in a moment."
-        };
-        aiProvider = 'fallback';
+        console.log('Copilot - Attempting Cloudflare Workers AI REST API');
+        response = await callCloudflareAIRest({ messages }, env);
+        console.log('Copilot - Cloudflare AI successful');
+      } catch (cfError: any) {
+        console.error('Copilot - Cloudflare AI failed, trying OpenRouter:', cfError.message);
+        aiProvider = 'openrouter';
+        
+        // Fallback to OpenRouter
+        try {
+          response = await callOpenRouter({
+            messages,
+            model: 'openai/gpt-3.5-turbo',
+            temperature: 0.7,
+            max_tokens: 1200
+          }, env);
+        } catch (orError: any) {
+          console.error('Copilot - OpenRouter also failed:', orError.message);
+          response = {
+            content: "I'm currently unable to assist due to a technical issue. Please try again in a moment."
+          };
+          aiProvider = 'fallback';
+        }
       }
     }
     
@@ -322,6 +374,68 @@ async function handleCopilot(request: Request, env: Env, user: any): Promise<Res
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+}
+
+// Call Google Gemma via Google AI Studio
+async function callGoogleGemma(request: { messages: Array<{ role: string; content: string }> }, env: Env): Promise<{ content: string }> {
+  if (!env.GOOGLE_AI_API_KEY) {
+    throw new Error('Google AI API key not configured');
+  }
+
+  const modelId = env.GOOGLE_AI_MODEL || 'gemma-2-9b-it';
+
+  const systemInstructions = request.messages
+    .filter((msg) => msg.role === 'system')
+    .map((msg) => msg.content);
+
+  const conversationMessages = request.messages
+    .filter((msg) => msg.role !== 'system')
+    .map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+  const payload: Record<string, unknown> = {
+    contents: conversationMessages
+  };
+
+  if (systemInstructions.length > 0) {
+    payload.systemInstruction = {
+      parts: [{ text: systemInstructions.join('\n') }]
+    };
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${env.GOOGLE_AI_API_KEY}`;
+
+  console.log('Google Gemma - Calling API with model:', modelId);
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Google Gemma - API error:', response.status, errorText);
+    throw new Error(`Google Gemma API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log('Google Gemma - Response received');
+
+  const text = data?.candidates?.[0]?.content?.parts
+    ?.map((part: any) => part.text)
+    ?.join('')
+    ?.trim();
+
+  if (!text) {
+    throw new Error('No response generated by Google Gemma');
+  }
+
+  return { content: text };
 }
 
 // Call Cloudflare Workers AI using REST API
