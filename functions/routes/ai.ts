@@ -382,7 +382,7 @@ async function callGoogleGemma(request: { messages: Array<{ role: string; conten
     throw new Error('Google AI API key not configured');
   }
 
-  const modelId = env.GOOGLE_AI_MODEL || 'gemma-2-9b-it';
+  const modelId = env.GOOGLE_AI_MODEL || 'gemma-3n-e2b-it';
 
   const systemInstructions = request.messages
     .filter((msg) => msg.role === 'system')
